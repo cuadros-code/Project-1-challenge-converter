@@ -19,37 +19,53 @@ struct ContentView: View {
         "Kelvin"
     ]
     
-    private var result: Double {
+    private var resultValue: String {
         
-        var result = temperature
+        var result: Measurement<UnitTemperature>!
         
         if converterType == "Celsius" {
+            let celciusMeasure = Measurement(
+                value: temperature,
+                unit: UnitTemperature.celsius
+            )
             if converterTypeOut == "Fahrenheit" {
-                result = temperature * 9/5 + 32
-            }
-            if converterTypeOut == "Kelvin" {
-                result = temperature + 273.15
+                result = celciusMeasure.converted(to: .fahrenheit)
+            } else if converterTypeOut == "Kelvin" {
+                result = celciusMeasure.converted(to: .kelvin)
+            } else {
+                result = celciusMeasure
             }
         }
         
         if converterType == "Fahrenheit" {
+            let fahrenheitMeasure = Measurement(
+                value: temperature,
+                unit: UnitTemperature.fahrenheit
+            )
             if converterTypeOut == "Celsius" {
-                result = (temperature - 32) * 5 / 9
-            }
-            if converterTypeOut == "Kelvin" {
-                result = (temperature - 32) * 5 / 9 + 273.15
+                result = fahrenheitMeasure.converted(to: .celsius)
+            } else if converterTypeOut == "Kelvin" {
+                result = fahrenheitMeasure.converted(to: .kelvin)
+            } else {
+                result = fahrenheitMeasure
             }
         }
         
         if converterType == "Kelvin" {
+            let kelvinMeasure = Measurement(
+                value: temperature,
+                unit: UnitTemperature.kelvin
+            )
             if converterTypeOut == "Celsius" {
-                result = temperature  - 273.15
-            }
-            if converterTypeOut == "Fahrenheit" {
-                result = (temperature - 273.15) * 9 / 5 + 32
+                result = kelvinMeasure.converted(to: .celsius)
+            } else if converterTypeOut == "Fahrenheit" {
+                result = kelvinMeasure.converted(to: .fahrenheit)
+            } else {
+                result = kelvinMeasure
             }
         }
-        return result
+        
+        return "\(result!)"
     }
     
     
@@ -77,7 +93,7 @@ struct ContentView: View {
                     .pickerStyle(.segmented)
                 }
                 
-                Text("\(String(format: "%.2f", result)) \u{00B0}\(converterTypeOut.first!)")
+                Text(resultValue)
                     .font(.system(size: 55))
                     .frame(maxWidth: .infinity)
                 
